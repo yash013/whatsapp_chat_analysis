@@ -10,7 +10,7 @@ if uploaded_file is not None:
     data = bytes_data.decode("utf-8") # converted byte data to the string
     # st.text(data)
     df = prepocessor.preprocess(data)
-    st.dataframe(df)
+    # st.dataframe(df)
     
     #fetch unique users
     users = df['user'].unique().tolist()
@@ -26,10 +26,19 @@ if uploaded_file is not None:
     
     if st.sidebar.button("Show Analysis"):
         
-        msges_num = helper.fetch_stats(user,df)
+        if user == 'Overall':
+            st.dataframe(df)
+        else:
+            st.dataframe(df[df['user'] == user])
+        
+        
+        msges_num, no_of_words = helper.fetch_stats(user,df)
         
         col1, col2, col3, col4 = st.columns(4)
        
         with col1:
             st.header("Total messages")
             st.title(msges_num)
+        with col2:
+            st.header("Total words")
+            st.title(no_of_words)
