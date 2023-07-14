@@ -1,5 +1,5 @@
 import streamlit as st
-import prepocessor
+import prepocessor, helper
 
 st.sidebar.title("Whatsapp Chat Analyzer")
 
@@ -16,10 +16,20 @@ if uploaded_file is not None:
     users = df['user'].unique().tolist()
     users.insert(0, "Overall")
     #remove 'group_notification' from the users
-    users.remove('group_notification')
+    if len(users) > 3:
+        users.remove('group_notification')
+    else:
+        pass
     users.sort()
     
-    st.sidebar.selectbox("Show analysis wrt", users)
+    user = st.sidebar.selectbox("Show analysis wrt", users)
     
     if st.sidebar.button("Show Analysis"):
-        pass
+        
+        msges_num = helper.fetch_stats(user,df)
+        
+        col1, col2, col3, col4 = st.columns(4)
+       
+        with col1:
+            st.header("Total messages")
+            st.title(msges_num)
