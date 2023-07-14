@@ -1,5 +1,6 @@
 import streamlit as st
 import prepocessor, helper
+import matplotlib.pyplot as plt
 
 st.sidebar.title("Whatsapp Chat Analyzer")
 
@@ -32,13 +33,83 @@ if uploaded_file is not None:
             st.dataframe(df[df['user'] == user])
         
         
-        msges_num, no_of_words = helper.fetch_stats(user,df)
+        msges_num, no_of_words, media_messages, links = helper.fetch_stats(user,df)
         
         col1, col2, col3, col4 = st.columns(4)
        
         with col1:
             st.header("Total messages")
             st.title(msges_num)
+            
         with col2:
             st.header("Total words")
             st.title(no_of_words)
+            
+        with col3:
+            st.header("Media Shared")
+            st.title(media_messages)
+            
+        with col4:
+            st.header("links Shared")
+            st.title(links)
+
+        # Find the busiest person in the chat group
+        if user == 'Overall':
+            st.title("Most busy Users")
+            x,new_df= helper.most_busy_users(df)
+            fig, ax = plt.subplots()
+           
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                ax.bar(x.index,x.values)
+                plt.xticks(rotation='vertical')
+                st.pyplot(fig)
+                
+            with col2:
+                st.dataframe(new_df)
+                
+        else:
+            pass
+        
+        # Monthly analysis
+        
+        # Hourly analysis
+        
+        # Wordcloud
+        st.title("Wordcloud")
+        df_wc = helper.create_wordcloud(user,df)
+        fig, ax = plt.subplots()
+        ax.imshow(df_wc)
+        st.pyplot(fig)
+        
+        # Most common words
+        st.title("Most common words")
+        df_mcw = helper.most_common_words(user,df)
+        
+        fig, ax = plt.subplots()
+        ax.barh(df_mcw[0], df_mcw[1])
+        plt.xticks(rotation='vertical')
+        
+        st.pyplot(fig)
+        
+        # emoji analysis
+        st.title('Emoji Analysis')
+        
+        df_emoji = helper.emoji_analysis(user,df)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.dataframe(df_emoji)
+        with col2:
+            fig, ax = plt.subplots()
+            ax.pie(df_emoji[1].head(7), labels=df_emoji[0].head(7), autopct="%0.2f")
+            
+            st.pyplot(fig)
+        
+        
+        
+            
+        
+        
