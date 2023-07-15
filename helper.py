@@ -102,6 +102,17 @@ def monthly_timeline(user, df):
     timeline['time'] = time
     
     return timeline
+
+def daily_timeline(user, df):
+    
+    if user!='Overall':
+        df = df[df['user'] == user]
+    
+    df['only_date'] = df['date'].dt.date
+    
+    daily_timeline = df.groupby(['only_date']).count()['message'].reset_index()
+    
+    return daily_timeline
     
     
     

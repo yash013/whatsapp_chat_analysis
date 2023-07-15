@@ -49,8 +49,17 @@ if uploaded_file is not None:
         with col4:
             st.header("links Shared")
             st.title(links)
+            
+        # Daily timeline
+        st.title('Daily Timeline')
+        daily_timeline = helper.daily_timeline(user,df)
+        fig,ax = plt.subplots()
+        plt.plot(daily_timeline['only_date'], daily_timeline['message'], color="brown")
+        plt.xticks(rotation='vertical')
+        st.pyplot(fig)
         
-        # timeline
+        
+        # Montly timeline
         st.title('Montly Timeline')
         timeline = helper.monthly_timeline(user,df)
         fig, ax = plt.subplots()
@@ -76,8 +85,6 @@ if uploaded_file is not None:
                 
         else:
             pass
-        
-        # Hourly analysis
         
         # Wordcloud
         st.title("Wordcloud")
