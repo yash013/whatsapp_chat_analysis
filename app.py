@@ -11,7 +11,6 @@ if uploaded_file is not None:
     data = bytes_data.decode("utf-8") # converted byte data to the string
     # st.text(data)
     df = prepocessor.preprocess(data)
-    # st.dataframe(df)
     
     #fetch unique users
     users = df['user'].unique().tolist()
@@ -21,19 +20,17 @@ if uploaded_file is not None:
         users.remove('group_notification')
     else:
         pass
+    
     users.sort()
+    
     
     user = st.sidebar.selectbox("Show analysis wrt", users)
     
     if st.sidebar.button("Show Analysis"):
         
-        if user == 'Overall':
-            st.dataframe(df)
-        else:
-            st.dataframe(df[df['user'] == user])
-        
-        
         msges_num, no_of_words, media_messages, links = helper.fetch_stats(user,df)
+        
+        st.title("Top Statistics")
         
         col1, col2, col3, col4 = st.columns(4)
        
@@ -52,6 +49,14 @@ if uploaded_file is not None:
         with col4:
             st.header("links Shared")
             st.title(links)
+        
+        # timeline
+        st.title('Montly Timeline')
+        timeline = helper.monthly_timeline(user,df)
+        fig, ax = plt.subplots()
+        plt.plot(timeline['time'], timeline['message'], color="red")
+        plt.xticks(rotation='vertical')
+        st.pyplot(fig)
 
         # Find the busiest person in the chat group
         if user == 'Overall':
@@ -62,7 +67,7 @@ if uploaded_file is not None:
             col1, col2 = st.columns(2)
             
             with col1:
-                ax.bar(x.index,x.values)
+                ax.bar(x.index,x.values, color="green")
                 plt.xticks(rotation='vertical')
                 st.pyplot(fig)
                 
@@ -71,8 +76,6 @@ if uploaded_file is not None:
                 
         else:
             pass
-        
-        # Monthly analysis
         
         # Hourly analysis
         
