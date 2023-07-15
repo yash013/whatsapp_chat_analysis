@@ -127,6 +127,18 @@ def month_activity_map(user, df):
         df = df[df['user'] == user]
         
     return df['month'].value_counts()
+
+def activity_heatmap(user, df):
+    
+    if user!='Overall':
+        df = df[df['user'] == user]
+    
+    activity_heatmap = df.pivot_table(index='day_name', columns='period', values='message', aggfunc='count').fillna(0)
+    
+    return activity_heatmap
+    
+    
+    
     
     
     
